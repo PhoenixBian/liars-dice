@@ -252,6 +252,6 @@ Drill accuracy: {stats['drill_accuracy']:.0%}
         last = recent[-1]
         content += f"Last match: vs {last['opponent_style'].title()} AI ({last['opponent_difficulty']}) — {'Won' if last['result'] == 'win' else 'Lost'} in {last['rounds']} rounds.\n\n"
 
-    content += "Training with Claude Code. Skill: github.com/PJBian1/liars-dice"
+    content += "Training with Claude Code. Skill: github.com/PhoenixBian/liars-dice"
 
     return content

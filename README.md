@@ -21,7 +21,7 @@ This skill teaches you that formula, drills it until it's automatic, then throws
 **Requirements:** [Claude Code](https://docs.anthropic.com/en/docs/claude-code), Python 3.8+
 
 ```bash
-git clone https://github.com/PJBian1/liars-dice.git ~/.claude/skills/liars-dice
+git clone https://github.com/PhoenixBian/liars-dice.git ~/.claude/skills/liars-dice
 cd ~/.claude/skills/liars-dice && chmod +x setup && ./setup
 ```
 
@@ -105,7 +105,7 @@ AI 吹牛骰子训练器。学概率、练计算、打 AI、涨 ELO。
 ## 安装
 
 ```bash
-git clone https://github.com/PJBian1/liars-dice.git ~/.claude/skills/liars-dice
+git clone https://github.com/PhoenixBian/liars-dice.git ~/.claude/skills/liars-dice
 cd ~/.claude/skills/liars-dice && chmod +x setup && ./setup
 ```
 
