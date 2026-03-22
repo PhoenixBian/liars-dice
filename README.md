@@ -1,179 +1,186 @@
 # liars-dice
 
-I'm a 25-year-old creator building in public. This is my first open-source project.
+我 25 岁，正在 Building in Public。这是第一个项目。
 
-It started with a conversation. I was chatting with Claude about Liar's Dice — the drinking game where you shake dice in a cup and bluff about what's on the table. I wanted to get better at it. Not "read a strategy guide" better. Actually better. The kind of better where you're three beers in and still calculating faster than everyone at the table.
+I'm 25, building in public. This is project #1.
 
-So Claude taught me. And somewhere in that conversation, something clicked.
+---
 
-**There is exactly one formula that separates winners from losers in Liar's Dice:**
+起点是一次对话。我跟 Claude 聊吹牛骰子——就是酒桌上摇骰子猜大小那个游戏。我想变强，不是"看了攻略觉得自己变强了"那种，是三杯啤酒下肚还能比所有人算得快那种。
+
+It started with a conversation. I was chatting with Claude about Liar's Dice — the drinking game where you shake dice and bluff. I wanted to actually get better. Three beers in, still calculating faster than everyone at the table better.
+
+Claude 教了我。20 分钟之内，有个东西 click 了。
+
+Claude taught me. In 20 minutes, something clicked.
+
+**吹牛骰子里，赢和输之间只隔着一个公式：**
+
+**There is exactly one formula that separates winners from losers:**
 
 ```
+期望值 = (未知骰子数) / 3 + 你手上的数量
 Expected count = (unknown dice) / 3 + your count
 ```
 
-That's it. Every decision in the game — bid, challenge, bluff, zhai — flows from this one number. Unknown dice divided by 3, plus what you already have. You can do it drunk. You can do it in two seconds. And once you can, you're not guessing anymore. You're calculating while everyone else is vibing.
+就这一个。叫、开、吹牛、斋——所有决策都从这个数字出发。未知骰子除以 3，加上你手上有的。喝醉了也能算。两秒钟能算完。算得出来之后，你就不是在猜了——你在算，而别人在猜。
 
-I went from not knowing this formula to solving probability drills in my head in about 20 minutes. Then I thought: **this entire learning path — the formula, the drills, the practice games — could be a tool.**
+That's it. Every decision — bid, challenge, bluff, zhai — flows from this number. You can do it drunk. You can do it in two seconds. Once you can, you're not guessing anymore. You're calculating while everyone else is vibing.
+
+我从完全不会这个公式到脑子里秒算概率，花了大概 20 分钟。然后我想：**这个学习路径本身——公式、做题、打 AI——就是一个产品。**
+
+I went from not knowing this formula to solving drills in my head in 20 minutes. Then I thought: **the entire learning path — formula, drills, games — is the product.**
+
+于是我把它做出来了。
 
 So I built it.
 
-## What this is
+## 这是什么 / What this is
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that turns your terminal into a Liar's Dice training ground. No app to download, no website to visit. You type `/liars-dice` in Claude Code and start playing.
+一个 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 技能。在终端里输入 `/liars-dice` 就能开始训练。不用下载 app，不用注册账号。
 
-Four modes:
+A Claude Code skill. Type `/liars-dice` in your terminal and start training. No app, no account.
 
-**Tutorial** — Learn from zero in 5 minutes. I extracted the exact teaching sequence from my own training conversation: rules, the N/3 shortcut, three practice problems, zhai mechanics, then your first real game. This sequence works because I was the test subject.
+四种模式 / Four modes:
 
-**Drill** — "15 total dice, your hand is [1, 3, 3, 5, 6], someone bids 7x3. Challenge or pass?" You answer, it tells you if you're right, shows the full math, tracks your accuracy. Five difficulty levels that auto-advance when you hit 80%. The goal is to make the math feel like breathing.
+**教学 Tutorial** — 5 分钟从零学会。教学顺序是从我自己的学习过程里直接提取的：规则 → N/3 公式 → 三道练习题 → 斋 → 第一局实战。这个顺序有效，因为我就是用这个顺序学会的。
 
-**Play** — Full games against AI opponents with actual personalities:
+Learn from zero in 5 minutes. The teaching sequence is extracted from my own training conversation. It works because I was the test subject.
 
-| | Conservative | Aggressive | Fox |
+**训练 Drill** — "全场 15 颗骰子，你的骰子是 [1, 3, 3, 5, 6]，有人叫 7 个 3。开不开？" 你回答，它告诉你对不对，展示完整计算过程，追踪正确率。5 个难度梯度，正确率到 80% 自动升级。目标：让概率计算变成条件反射。
+
+Answer probability questions with instant feedback and full math breakdowns. 5 difficulty levels, auto-advance at 80% accuracy. Goal: make the math feel like breathing.
+
+**对局 Play** — 打 AI。三种性格：
+
+Full games against AI opponents with actual personalities:
+
+| | 保守 Conservative | 激进 Aggressive | 老狐狸 Fox |
 |---|---|---|---|
-| **Vibe** | Your cautious friend | The guy who slams the table | The one who smiles before winning |
-| **Bluff rate** | 0% | 30% | 15% but surgically precise |
-| **Zhai usage** | Almost never | Weaponized | Tactical |
-| **ELO range** | 800-1000 | 900-1200 | 1100-1500 |
+| **气质** Vibe | 你那个谨慎的朋友 | 拍桌子那个 | 赢之前先笑一下的那个 |
+| **吹牛率** Bluff | 0% | 30% | 15%，但刀刀见血 |
+| **斋的使用** Zhai | 几乎不叫 | 当武器用 | 战术性叫 |
+| **ELO** | 800-1000 | 900-1200 | 1100-1500 |
 
-2-6 players. Auto-matchmaking based on your ELO. The Fox will read your bidding patterns and exploit them. Good luck.
+2-6 人，按 ELO 自动匹配。老狐狸会读你的出价模式然后针对你。祝好运。
 
-**Review** — Post-game breakdown of every decision you made. "You challenged 7x3. Expected was 6.3. Challenge was correct, 56% win probability. But you could have raised to 7x5 — your strongest face — with 71% safety margin." This is where you actually get better.
+2-6 players. Auto-matchmaking by ELO. The Fox reads your bidding patterns and exploits them. Good luck.
 
-## The origin story (for real)
+**复盘 Review** — 逐手分析你的每个决策。"你开了 7 个 3。期望值是 6.3。开对了，胜率 56%。但你其实可以叫 7 个 5——你最强的牌——安全边际 71%。" 这才是真正涨水平的地方。
 
-Here's the actual conversation flow that became this tool:
+Post-game breakdown of every decision. This is where you actually get better.
 
-1. I asked Claude to teach me Liar's Dice probability
-2. Claude gave me the N/3 formula
-3. I solved 6 practice problems and the shortcut became automatic
-4. Claude taught me zhai (the Chinese variant where 1s stop being wild)
-5. I learned aggressive strategies — jump-bidding, fishing, zhai as a weapon
-6. I asked "can we simulate a game?"
-7. Then I realized: **this entire sequence is the product**
+## 起源故事 / The origin story
+
+这个工具是怎么来的——就是下面这 7 步：
+
+1. 我让 Claude 教我吹牛骰子的概率 / I asked Claude to teach me probability
+2. Claude 给了我 N/3 公式 / Claude gave me the N/3 formula
+3. 我做了 6 道题，公式变成了条件反射 / I solved 6 problems, the shortcut became automatic
+4. Claude 教了我斋（1 不再万能的中国规则）/ Claude taught me zhai
+5. 我学了进攻策略——跳叫、钓鱼、斋作武器 / I learned aggressive strategies
+6. 我说"来模拟一局？" / I said "can we simulate a game?"
+7. 然后我意识到：**这整个学习过程就是产品** / Then I realized: **the entire sequence is the product**
+
+教学不是游戏设计师设计的。是从一次真实的学习对话里提取的。每一步都存在，是因为它在我身上验证过。
 
 The tutorial isn't designed by a game designer. It's extracted from a real learning session. Every step exists because it worked on me.
 
-## Chinese rules: Zhai
+## 斋 / Zhai — 中国吹牛的灵魂
 
-Most Liar's Dice implementations only cover Western rules. This one supports the Chinese variant — **zhai** (literally "fasting"):
+大部分吹牛骰子的工具只支持西方规则。这个支持中国规则——**斋**。
 
-**Normal:** 1s are wild. Expected count = N/3. You're counting natives + wilds.
+Most Liar's Dice tools only cover Western rules. This one supports the Chinese variant — **zhai** (literally "fasting"):
 
-**Zhai:** Someone strips the wildcards. 1s become just 1s. Expected count drops to N/6. Everything you thought you knew about the board just got cut in half.
+**正常 Normal：** 1 是万能的，期望值 = N/3。你数的是本体 + 万能 1。
 
-**Break-zhai:** Add 2 to the quantity. 1s come back to life. This is the counter-attack — if you have three 1s that just got killed by zhai, breaking it brings your army back.
+1s are wild. Expected count = N/3. You count natives + wilds.
 
-**When to call zhai:** You have 3+ natives of one face and 0-1 ones. Your opponents' wilds die but your natives don't care.
+**叫斋 Zhai：** 有人宣布 1 不再万能。期望值从 N/3 直接砍到 N/6。你以为你知道的牌面，突然砍半了。
 
-**When NOT to call zhai:** You have lots of 1s. You'd be shooting yourself.
+Someone strips wildcards. Expected count drops from N/3 to N/6. Everything you knew about the board just got halved.
 
-This mechanic adds an entire layer of strategy that doesn't exist in the Western version. It's the reason Chinese Liar's Dice is a deeper game.
+**破斋 Break-zhai：** 数量加 2，1 重新变成万能。这是反杀——如果你手上三个 1 刚被斋杀了，破斋让你的军队原地复活。
 
-## ELO tracking
+Add 2 to quantity, 1s come back to life. Counter-attack — your dead wilds resurrect.
 
-You start at 1000. Every game adjusts your rating based on the AI's difficulty. Beat a Fox at Hard? Big gains. Lose to a Conservative at Easy? Big drop. K-factor starts at 32 for your first 50 games, drops to 16 after.
+**什么时候叫斋：** 手上某个点数本体 3 个以上，1 只有 0-1 个。对手的万能 1 全死了，你的本体纹丝不动。
 
-Your progress persists across sessions in `~/.liars-dice/progress.json`. Watch yourself go from 1000 to 1200+ over a week of practice.
+**什么时候不叫：** 手上 1 很多。叫了等于自杀。
 
-## Install
+斋让吹牛骰子多了一整层博弈。这是中国吹牛比西方版本更深的原因。
 
-**Requirements:** [Claude Code](https://docs.anthropic.com/en/docs/claude-code), Python 3.8+
+This mechanic adds an entire layer of strategy. It's why Chinese Liar's Dice is a deeper game.
+
+## ELO 评分 / ELO Rating
+
+起始 1000。打赢强的涨得多，输给弱的跌得多。前 50 局 K=32（涨跌快），之后 K=16（趋于稳定）。进度保存在 `~/.liars-dice/progress.json`，跨对话持久化。看着自己从 1000 爬到 1200+。
+
+Start at 1000. Beat harder opponents for bigger gains. K=32 for first 50 games, then 16. Progress persists across sessions.
+
+## 安装 / Install
+
+**需要 Requirements：** [Claude Code](https://docs.anthropic.com/en/docs/claude-code)，Python 3.8+
 
 ```bash
 git clone https://github.com/PhoenixBian/liars-dice.git ~/.claude/skills/liars-dice
 cd ~/.claude/skills/liars-dice && chmod +x setup && ./setup
 ```
 
+在 Claude Code 里输入 `/liars-dice` 或 `/bluff`。就这样。
+
 Type `/liars-dice` or `/bluff` in Claude Code. That's it.
 
-Updates: the skill checks for new versions automatically. Or `cd ~/.claude/skills/liars-dice && git pull`.
+更新：技能会自动检查新版本。或者手动 `cd ~/.claude/skills/liars-dice && git pull`。
 
-## Under the hood
+## 技术细节 / Under the hood
 
-Pure Python, zero external dependencies. Everything runs on Python 3 stdlib.
+纯 Python，零外部依赖。只用 Python 3 标准库。
+
+Pure Python, zero external dependencies.
 
 ```
 engine/
-  probability.py   — Exact binomial distribution (the N/3 shortcut is for humans;
-                      the engine uses real math to grade your answers)
-  game.py          — Full state machine: 2-6 players, zhai/break-zhai,
-                      serializable to JSON for mid-game saves
-  ai_opponents.py  — Three personalities with tunable difficulty and
-                      controlled imperfection (perfect AI isn't fun to play)
-  trainer.py       — Drill generator, 5 difficulty levels, auto-progression
-  elo.py           — Rating system, match history, progress curves
-  tutorial.py      — The 5-step learning flow, extracted verbatim from
-                      the conversation that started all of this
+  probability.py   — 精确二项分布（N/3 是给人用的速算；引擎用真数学来判你的答案对不对）
+                      Exact binomial distribution (N/3 is for humans; engine uses real math)
+  game.py          — 完整状态机：2-6 人，斋/破斋，可序列化 JSON 存档
+                      Full state machine: 2-6 players, zhai/break-zhai, JSON serializable
+  ai_opponents.py  — 三种性格，可调难度，有控制地犯错（完美 AI 不好玩）
+                      Three personalities, tunable difficulty, controlled imperfection
+  trainer.py       — 训练题生成器，5 个难度，自动升级
+                      Drill generator, 5 levels, auto-progression
+  elo.py           — ELO 评分，对局历史，进步曲线
+                      Rating system, match history, progress curves
+  tutorial.py      — 5 步教学流程，从那次对话里逐字提取的
+                      5-step learning flow, extracted verbatim from the original conversation
 ```
+
+没有网络请求。没有遥测。没有账号。你的数据留在你的机器上。
 
 No network calls. No telemetry. No accounts. Your data stays on your machine.
 
-## Why Building in Public
+## 为什么 Building in Public
 
-I'm building my AI-augmented life in public. This is project #1.
+这是我的第一个开源项目。
 
-The thesis: **AI doesn't replace skill — it compresses the learning curve.** I went from "I don't know the math" to "I can calculate expected values while holding a beer" in one conversation. Then I turned that conversation into a tool that lets anyone else do the same thing.
+核心命题：**AI 不替代技能，AI 压缩学习曲线。**
 
-Every project I ship will follow this pattern: learn something with AI, extract the learning into a reusable tool, open-source it. The AI did the teaching. I did the learning. Now the tool does both.
+我从"不知道怎么算"到"拿着啤酒还能秒算期望值"，只用了一次对话。然后我把这次对话变成了工具，让任何人都能做同样的事。
 
-Follow the journey: [@PhoenixBian](https://github.com/PhoenixBian)
+以后每个项目都会走这个模式：用 AI 学会一样东西 → 把学习过程提取成工具 → 开源。AI 做教学，我做学习，工具做两者。
+
+This is project #1. The thesis: **AI doesn't replace skill — it compresses the learning curve.** Learn something with AI, extract the learning into a tool, open-source it. The AI teaches. I learn. The tool does both.
+
+关注这个旅程 / Follow the journey: [@PhoenixBian](https://github.com/PhoenixBian)
 
 ## License
+
+MIT。Fork 它，改它，带到下一次酒局。
 
 MIT. Fork it, improve it, bring it to your next game night.
 
 ---
 
+**教我算骰子的 AI，现在教你。**
+
 **The AI that taught me to count dice now teaches you.**
-
----
-
-# liars-dice (Chinese)
-
-AI 吹牛骰子训练器。
-
-这个项目的起点是一次对话。我跟 Claude 聊吹牛骰子，想搞明白概率怎么算。结果 20 分钟之内，我从完全不会算变成了能秒算期望值。然后我意识到：这个学习路径本身就是产品。
-
-## 核心公式
-
-```
-期望值 = (未知骰子数) / 3 + 你手上的数量
-```
-
-正常情况除以 3，斋了之后除以 6。一个公式，所有决策的基础。
-
-## 安装
-
-```bash
-git clone https://github.com/PhoenixBian/liars-dice.git ~/.claude/skills/liars-dice
-cd ~/.claude/skills/liars-dice && chmod +x setup && ./setup
-```
-
-在 Claude Code 里输入 `/liars-dice` 或 `/bluff`。
-
-## 四种模式
-
-**教学** — 5 分钟从零学会。规则 -> N/3 公式 -> 做题 -> 斋 -> 第一局实战。
-
-**训练** — 出题、做题、讲解。5 个难度梯度，正确率到 80% 自动升级。目标：让概率计算变成条件反射。
-
-**对局** — 三种 AI 性格：保守（从不虚张声势）、激进（爱跳叫、会叫斋、30% 概率吹牛）、老狐狸（会钓鱼、会读你的出价模式、15% 精准虚张声势）。2-6 人，按 ELO 自动匹配。
-
-**复盘** — 逐手分析。你的选择 vs 数学最优解 vs AI 的选择。每一手都算期望值和胜率。
-
-## 斋
-
-大部分吹牛骰子工具只支持西方规则。这个支持中国规则——斋。
-
-- **叫斋**：1 不再万能，期望值从 N/3 砍到 N/6
-- **破斋**：加 2，1 恢复万能
-- **什么时候叫**：手上本体多（3+）、1 少（0-1）
-- **什么时候不叫**：手上 1 多，叫了等于自杀
-
-斋让吹牛骰子多了一整层博弈。这是中国版本比西方版本更深的原因。
-
-## Building in Public
-
-这是我的第一个开源项目。核心逻辑：**AI 不替代技能，AI 压缩学习曲线。** 用 AI 学会一样东西，把学习过程提取成工具，开源。AI 做教学，我做学习，工具做两者。
