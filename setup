@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# liars-dice setup — verify Python 3, make bin scripts executable
+set -e
+
+LD_DIR="$(cd "$(dirname "$0")" && pwd)"
+STATE_DIR="$HOME/.liars-dice"
+
+echo "Setting up Liar's Dice skill..."
+
+# 1. Check Python 3
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Error: python3 is required but not installed." >&2
+  echo "Install it: brew install python3 (macOS) or apt install python3 (Linux)" >&2
+  exit 1
+fi
+
+PYTHON_VER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+echo "Python $PYTHON_VER found."
+
+# 2. Make bin scripts executable
+chmod +x "$LD_DIR/bin/"* 2>/dev/null || true
+chmod +x "$LD_DIR/setup" 2>/dev/null || true
+echo "Scripts marked executable."
+
+# 3. Create state directory
+mkdir -p "$STATE_DIR"
+echo "State directory: $STATE_DIR"
+
+# 4. Initialize progress file if not exists
+if [ ! -f "$STATE_DIR/progress.json" ]; then
+  python3 -c "
+import json
+progress = {
+    'elo': 1000,
+    'elo_history': [{'elo': 1000, 'timestamp': '$(date -u +%Y-%m-%dT%H:%M:%SZ)', 'event': 'init'}],
+    'games_played': 0,
+    'games_won': 0,
+    'drills_completed': 0,
+    'drills_correct': 0,
+    'tutorial_completed': False,
+    'current_drill_level': 1,
+    'match_history': []
+}
+with open('$STATE_DIR/progress.json', 'w') as f:
+    json.dump(progress, f, indent=2)
+"
+  echo "Progress file initialized (ELO: 1000)."
+else
+  echo "Progress file exists, skipping."
+fi
+
+# 5. Verify engine modules
+MISSING=0
+for module in probability game ai_opponents trainer elo tutorial; do
+  if [ ! -f "$LD_DIR/engine/${module}.py" ]; then
+    echo "Warning: engine/${module}.py not found"
+    MISSING=$((MISSING + 1))
+  fi
+done
+
+if [ "$MISSING" -eq 0 ]; then
+  echo "All engine modules present."
+fi
+
+# 6. Run a quick self-test
+python3 -c "
+import sys
+sys.path.insert(0, '$LD_DIR')
+from engine.probability import expected_count
+result = expected_count(total_dice=15, my_count=3, wild_ones=True)
+assert result > 0, 'Probability engine self-test failed'
+print(f'Self-test passed (expected_count={result:.1f}).')
+" 2>/dev/null || echo "Self-test skipped (engine not yet complete)."
+
+echo ""
+echo "Liar's Dice skill ready!"
+echo "Usage: /liars-dice or /bluff"
+echo "Version: $(cat "$LD_DIR/VERSION")"

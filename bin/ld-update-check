@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+# ld-update-check — periodic version check for liars-dice skill.
+#
+# Output (one line, or nothing):
+#   JUST_UPGRADED <old> <new>       — marker found from recent upgrade
+#   UPGRADE_AVAILABLE <old> <new>   — remote VERSION differs from local
+#   (nothing)                       — up to date, snoozed, or check skipped
+set -euo pipefail
+
+LD_DIR="${LD_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
+STATE_DIR="${LIARS_DICE_STATE_DIR:-$HOME/.liars-dice}"
+CACHE_FILE="$STATE_DIR/last-update-check"
+MARKER_FILE="$STATE_DIR/just-upgraded-from"
+SNOOZE_FILE="$STATE_DIR/update-snoozed"
+VERSION_FILE="$LD_DIR/VERSION"
+REMOTE_URL="${LD_REMOTE_URL:-https://raw.githubusercontent.com/PJBian1/liars-dice/main/VERSION}"
+
+# Force flag
+if [ "${1:-}" = "--force" ]; then
+  rm -f "$CACHE_FILE"
+fi
+
+# Check if updates are disabled
+_UC=$("$LD_DIR/bin/ld-config" get update_check 2>/dev/null || true)
+if [ "$_UC" = "false" ]; then
+  exit 0
+fi
+
+# Snooze check
+check_snooze() {
+  local remote_ver="$1"
+  if [ ! -f "$SNOOZE_FILE" ]; then
+    return 1
+  fi
+  local snoozed_ver snoozed_level snoozed_epoch
+  snoozed_ver="$(awk '{print $1}' "$SNOOZE_FILE" 2>/dev/null || true)"
+  snoozed_level="$(awk '{print $2}' "$SNOOZE_FILE" 2>/dev/null || true)"
+  snoozed_epoch="$(awk '{print $3}' "$SNOOZE_FILE" 2>/dev/null || true)"
+
+  if [ -z "$snoozed_ver" ] || [ -z "$snoozed_level" ] || [ -z "$snoozed_epoch" ]; then
+    return 1
+  fi
+  case "$snoozed_level" in *[!0-9]*) return 1 ;; esac
+  case "$snoozed_epoch" in *[!0-9]*) return 1 ;; esac
+
+  if [ "$snoozed_ver" != "$remote_ver" ]; then
+    return 1
+  fi
+
+  local duration
+  case "$snoozed_level" in
+    1) duration=86400 ;;
+    2) duration=172800 ;;
+    *) duration=604800 ;;
+  esac
+
+  local now
+  now="$(date +%s)"
+  local expires=$(( snoozed_epoch + duration ))
+  if [ "$now" -lt "$expires" ]; then
+    return 0
+  fi
+  return 1
+}
+
+mkdir -p "$STATE_DIR"
+
+# Check for just-upgraded marker
+if [ -f "$MARKER_FILE" ]; then
+  OLD_VER="$(cat "$MARKER_FILE")"
+  NEW_VER="$(cat "$VERSION_FILE" 2>/dev/null || echo "unknown")"
+  rm -f "$MARKER_FILE"
+  echo "JUST_UPGRADED $OLD_VER $NEW_VER"
+  exit 0
+fi
+
+LOCAL_VER="$(cat "$VERSION_FILE" 2>/dev/null || echo "0.0.0")"
+
+# Rate limit: check at most once per hour
+if [ -f "$CACHE_FILE" ]; then
+  LAST_CHECK="$(cat "$CACHE_FILE")"
+  NOW="$(date +%s)"
+  DIFF=$(( NOW - LAST_CHECK ))
+  if [ "$DIFF" -lt 3600 ]; then
+    exit 0
+  fi
+fi
+
+# Fetch remote version
+REMOTE_VER="$(curl -sf --max-time 3 "$REMOTE_URL" 2>/dev/null | tr -d '[:space:]' || true)"
+date +%s > "$CACHE_FILE"
+
+if [ -z "$REMOTE_VER" ]; then
+  exit 0
+fi
+
+if [ "$REMOTE_VER" != "$LOCAL_VER" ]; then
+  if check_snooze "$REMOTE_VER"; then
+    exit 0
+  fi
+  echo "UPGRADE_AVAILABLE $LOCAL_VER $REMOTE_VER"
+fi
